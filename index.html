@@ -342,7 +342,7 @@
                 </div>
             </div>
 
-            <button class="action-btn btn-primary" onclick="saveRecord()">Guardar Registro</button>
+            <button class="action-btn btn-primary" id="save-btn" onclick="saveRecord()">Guardar Registro</button>
         </div>
     </div>
 
@@ -350,14 +350,17 @@
     <div id="tab-records" class="hidden">
         <div class="card">
             <button class="action-btn btn-success" onclick="exportToCSV()" style="margin-top:0; margin-bottom: 12px;">
-                📥 Exportar a Excel (.CSV)
+                📥 Descargar Copia Excel (.CSV)
             </button>
             <div id="records-list"></div>
-            <button class="action-btn btn-danger" onclick="clearAllRecords()">Borrar Todos los Registros</button>
+            <button class="action-btn btn-danger" onclick="clearAllRecords()">Borrar Registros Locales</button>
         </div>
     </div>
 
     <script>
+        // PEGA TU URL DE GOOGLE SCRIPT ENTRE LAS COMILLAS:
+        const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
+
         const scores = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
         let currentScores = { damage: 0.5, ground: 0.5, tree: 0.5 };
         let records = JSON.parse(localStorage.getItem('harvest_records') || '[]');
@@ -399,7 +402,11 @@
             }
         }
 
-        function saveRecord() {
+        async function saveRecord() {
+            const btn = document.getElementById('save-btn');
+            btn.innerText = "Enviando a Google Sheets...";
+            btn.disabled = true;
+
             const record = {
                 date: document.getElementById('eval-date').value,
                 observer: document.getElementById('eval-observer').value,
@@ -415,12 +422,30 @@
                 comments: document.getElementById('eval-comments').value
             };
 
+            // Guardar en copia local
             records.push(record);
             localStorage.setItem('harvest_records', JSON.stringify(records));
             updateRecordCount();
-            alert('¡Registro guardado con éxito!');
-            
-            // Limpiar comentario
+
+            // Enviar a Google Sheets
+            if(GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_SCRIPT_URL_HERE") {
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(record)
+                    });
+                    alert('¡Registro guardado localmente y enviado a Google Sheets!');
+                } catch(e) {
+                    alert('Guardado en el teléfono. (No se pudo conectar con Google Sheets)');
+                }
+            } else {
+                alert('¡Registro guardado en la app! (Configura tu Google Script URL para sincro automática)');
+            }
+
+            btn.innerText = "Guardar Registro";
+            btn.disabled = false;
             document.getElementById('eval-comments').value = '';
         }
 
@@ -435,7 +460,7 @@
                 list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No hay registros guardados.</p>';
                 return;
             }
-            records.slice().reverse().forEach((r, idx) => {
+            records.slice().reverse().forEach((r) => {
                 const item = document.createElement('div');
                 item.className = 'record-card';
                 item.innerHTML = `
@@ -478,7 +503,7 @@
         }
 
         function clearAllRecords() {
-            if(confirm('¿Estás seguro de borrar todos los registros acumulados?')) {
+            if(confirm('¿Estás seguro de borrar los registros guardados en este dispositivo?')) {
                 records = [];
                 localStorage.removeItem('harvest_records');
                 updateRecordCount();
