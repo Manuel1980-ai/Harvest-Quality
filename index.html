@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Harvest Quality APP - Cobram Estate Olives</title>
+  <title>Harvest Quality - Cobram Estate Olives</title>
   <style>
     :root {
       --primary: #1e3a8a;
@@ -38,52 +38,54 @@
       margin: 0 auto;
     }
 
+    /* Layout exacto de Canva */
     header {
       margin-bottom: 24px;
+      padding: 0 8px;
     }
 
     .header-layout {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 24px;
-      padding-left: 8px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 20px;
     }
 
-    .logo-column {
+    .logo-box {
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 130px;
     }
 
     .logo-icon {
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
     }
 
     .logo-subtext {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--primary);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 800;
       margin-top: 6px;
       text-align: center;
-      white-space: nowrap;
+      line-height: 1.1;
     }
 
-    .title-column {
+    .title-box {
       display: flex;
       align-items: center;
-      height: 70px;
     }
 
-    .title-column h1 {
-      font-size: 2.2rem;
+    .title-box h1 {
+      font-size: 2.3rem;
       color: var(--primary);
       font-weight: 900;
       line-height: 1;
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
     /* Tabs */
@@ -301,8 +303,8 @@
   <div class="container">
     <header>
       <div class="header-layout">
-        <div class="logo-column">
-          <!-- Logo de Cobram Estate -->
+        <!-- Columna Izquierda: Logo + Subtexto -->
+        <div class="logo-box">
           <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="46" fill="none" stroke="#0f172a" stroke-width="2"/>
             <circle cx="50" cy="50" r="41" fill="none" stroke="#0f172a" stroke-width="1.2"/>
@@ -312,13 +314,14 @@
             <circle cx="50" cy="50" r="21" fill="none" stroke="#0f172a" stroke-width="1.2"/>
             <circle cx="50" cy="50" r="16" fill="none" stroke="#0f172a" stroke-width="1.2"/>
             <circle cx="50" cy="50" r="11" fill="#0f172a"/>
-            <!-- Aceituna central -->
             <path d="M47 43 C52 41 55 46 53 51 C51 55 45 54 44 49 Z" fill="#ffffff"/>
             <path d="M52 41 Q55 37 57 39" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <div class="logo-subtext">COBRAM ESTATE OLIVES</div>
         </div>
-        <div class="title-column">
+
+        <!-- Columna Derecha: Título Principal -->
+        <div class="title-box">
           <h1>Harvest Quality</h1>
         </div>
       </div>
