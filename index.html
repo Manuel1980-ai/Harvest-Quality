@@ -1,316 +1,492 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crop Projection – Cobram Estate Olives</title>
-  <meta name="theme-color" content="#e8f5e9" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Crop Projection" />
-  <link rel="manifest" href="manifest.json" />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #e8f5e9; font-family: 'Nunito', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Harvest Quality - Cobram Estate Olives</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #eff6ff;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+            padding: 12px 0;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: #f8fafc;
+            color: var(--text);
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            background-color: #fff;
+        }
+
+        .scores-section {
+            margin-top: 16px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .score-row {
+            margin-bottom: 16px;
+        }
+
+        .score-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .score-title span:first-child {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .score-value {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--accent);
+            background: var(--primary-light);
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+
+        .rating-btns {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .rate-btn {
+            flex: 1;
+            min-width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .rate-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .record-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+        }
+
+        .record-scores {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 6px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useRef } = React;
 
-    const COLORS = [
-      { bg: "#5a6478", light: "#eef0f4", text: "#5a6478" },
-      { bg: "#3b82f6", light: "#eff6ff", text: "#3b82f6" },
-      { bg: "#22c55e", light: "#f0fdf4", text: "#22c55e" },
-      { bg: "#f59e0b", light: "#fffbeb", text: "#f59e0b" },
-      { bg: "#f43f5e", light: "#fff1f2", text: "#f43f5e" },
-    ];
+    <div class="header">
+        <h1>Harvest Quality</h1>
+        <p>Cobram Estate Olives</p>
+    </div>
 
-    const VARIEDADES = ["Arbequina","Coratina","Picual","Manzanilla","Misión","Arbosana","Koroneiki","Hojiblanca","Picudo","Chemlali","Cerasoula","Sikitita","Lecciana","Nocellara","I-15"];
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('eval')">Evaluación</button>
+        <button class="tab-btn" onclick="switchTab('records')">Registros (<span id="record-count">0</span>)</button>
+    </div>
 
-    const STORAGE_KEY = "crop_projection_sessions_v1";
-    function loadSessions() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
-    }
-    function saveSessions(s) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
-    }
-    function fmtDate(iso) {
-      const d = new Date(iso);
-      return d.toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" }) +
-        " " + d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
-    }
-
-    function App() {
-      const [tab, setTab] = useState("counter");
-      const [counts, setCounts] = useState([0,0,0,0,0]);
-      const [sessions, setSessions] = useState(loadSessions);
-      const [flash, setFlash] = useState(null);
-      const [holdProgress, setHoldProgress] = useState(0);
-      const [isHolding, setIsHolding] = useState(false);
-      const [saved, setSaved] = useState(false);
-      const [undoHistory, setUndoHistory] = useState([]);
-      const [evaluador, setEvaluador] = useState("");
-      const [linea, setLinea] = useState("");
-      const [field, setField] = useState("");
-      const [variedad, setVariedad] = useState("");
-      const [showVariedades, setShowVariedades] = useState(false);
-      const animFrame = useRef(null);
-      const holdStart = useRef(null);
-
-      const total = counts.reduce((a,b) => a+b, 0);
-      const weightedSum = counts.reduce((acc,c,i) => acc+c*i, 0);
-      const average = total > 0 ? (weightedSum/total).toFixed(2) : "0.00";
-
-      React.useEffect(() => { saveSessions(sessions); }, [sessions]);
-
-      const handleCount = (idx) => {
-        setCounts(prev => { const n=[...prev]; n[idx]++; return n; });
-        setUndoHistory(prev => [...prev, idx]);
-        setFlash(idx); setTimeout(() => setFlash(null), 180);
-      };
-      const handleUndo = () => {
-        if (!undoHistory.length) return;
-        const last = undoHistory[undoHistory.length-1];
-        setCounts(prev => { const n=[...prev]; n[last]--; return n; });
-        setUndoHistory(prev => prev.slice(0,-1));
-        setFlash(`undo-${last}`); setTimeout(() => setFlash(null), 180);
-      };
-      const handleSave = () => {
-        if (!total) return;
-        const session = { id: Date.now(), date: new Date().toISOString(), evaluador, field, linea, variedad, counts: [...counts], total, weightedSum, average };
-        setSessions(prev => [session, ...prev]);
-        setCounts([0,0,0,0,0]); setUndoHistory([]); setSaved(true); setTimeout(() => setSaved(false), 2000);
-      };
-      const handleDelete = (id) => setSessions(prev => prev.filter(s => s.id !== id));
-      const handleExport = () => {
-        if (!sessions.length) return;
-        const rows = sessions.map((s,i) => ({
-          "#": sessions.length-i, "Fecha": fmtDate(s.date), "Evaluador": s.evaluador||"",
-          "Field": s.field||"", "Línea": s.linea||"", "Variedad": s.variedad||"",
-          "Count 0": s.counts[0], "Count 1": s.counts[1], "Count 2": s.counts[2],
-          "Count 3": s.counts[3], "Count 4": s.counts[4],
-          "Total Plantas": s.total, "Total Producción": s.weightedSum, "Promedio": parseFloat(s.average),
-        }));
-        const gP = sessions.reduce((a,s) => a+s.total, 0);
-        const gF = sessions.reduce((a,s) => a+s.weightedSum, 0);
-        rows.push({ "#":"", "Fecha":"TOTALES", "Evaluador":"", "Field":"", "Línea":"", "Variedad":"",
-          "Count 0": sessions.reduce((a,s)=>a+s.counts[0],0),
-          "Count 1": sessions.reduce((a,s)=>a+s.counts[1],0),
-          "Count 2": sessions.reduce((a,s)=>a+s.counts[2],0),
-          "Count 3": sessions.reduce((a,s)=>a+s.counts[3],0),
-          "Count 4": sessions.reduce((a,s)=>a+s.counts[4],0),
-          "Total Plantas": gP, "Total Producción": gF, "Promedio": parseFloat((gF/gP).toFixed(2)),
-        });
-        const ws = XLSX.utils.json_to_sheet(rows);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Conteo");
-        XLSX.writeFile(wb, `crop_projection_${new Date().toISOString().slice(0,10)}.xlsx`);
-      };
-
-      const startHold = () => {
-        setIsHolding(true); holdStart.current = Date.now();
-        const animate = () => {
-          const p = Math.min((Date.now()-holdStart.current)/3000, 1);
-          setHoldProgress(p);
-          if (p < 1) { animFrame.current = requestAnimationFrame(animate); }
-          else { setCounts([0,0,0,0,0]); setUndoHistory([]); setIsHolding(false); setHoldProgress(0); }
-        };
-        animFrame.current = requestAnimationFrame(animate);
-      };
-      const cancelHold = () => { setIsHolding(false); setHoldProgress(0); cancelAnimationFrame(animFrame.current); };
-
-      const totalSessions = sessions.length;
-      const grandTotal = sessions.reduce((a,s) => a+s.total, 0);
-      const grandFlowers = sessions.reduce((a,s) => a+s.weightedSum, 0);
-
-      return (
-        <div style={{ minHeight:"100vh", background:"#e8f5e9", display:"flex", flexDirection:"column", alignItems:"center", fontFamily:"'Nunito',sans-serif", padding:"20px 16px 40px" }}>
-          <div style={{ textAlign:"center", marginBottom:20 }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginBottom:4 }}>
-              <svg width="60" height="60" viewBox="0 0 100 100" style={{ opacity:0.9 }}>
-                <circle cx="50" cy="50" r="48" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="44" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="36" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="32" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="28" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="24" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="20" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="16" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <circle cx="50" cy="50" r="12" fill="none" stroke="#1e293b" strokeWidth="1"/>
-                <ellipse cx="50" cy="48" rx="4" ry="5" fill="#1e293b"/>
-                <rect x="49.5" y="42" width="1" height="3" fill="#1e293b"/>
-                <ellipse cx="50" cy="42" rx="1.5" ry="1" fill="#1e293b"/>
-              </svg>
-              <div style={{ fontSize:32, fontWeight:900, color:"#1e293b", letterSpacing:"-1px" }}>Crop Projection</div>
+    <!-- PESTAÑA EVALUACIÓN -->
+    <div id="tab-eval">
+        <div class="card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="eval-date">
+                </div>
+                <div class="form-group">
+                    <label>Observer</label>
+                    <input type="text" id="eval-observer" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label>Harvester</label>
+                    <input type="text" id="eval-harvester" placeholder="Ej: H-01">
+                </div>
+                <div class="form-group">
+                    <label>Shift</label>
+                    <select id="eval-shift">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Driver</label>
+                    <input type="text" id="eval-driver" placeholder="Nombre Chofer">
+                </div>
+                <div class="form-group">
+                    <label>Field</label>
+                    <input type="text" id="eval-field" placeholder="Ej: North Field A">
+                </div>
+                <div class="form-group">
+                    <label>Block / Row</label>
+                    <input type="text" id="eval-blockrow" placeholder="Ej: B12 / R04">
+                </div>
+                <div class="form-group">
+                    <label>Variety</label>
+                    <select id="eval-variety">
+                        <option value="">Seleccionar...</option>
+                        <option value="Arbequina">Arbequina</option>
+                        <option value="Picual">Picual</option>
+                        <option value="Coratina">Coratina</option>
+                        <option value="Arbosana">Arbosana</option>
+                        <option value="Manzanilla">Manzanilla</option>
+                        <option value="Mission">Mission</option>
+                    </select>
+                </div>
             </div>
-            <div style={{ fontSize:26, color:"#1e293b", fontWeight:800, marginTop:2 }}>Cobram Estate Olives</div>
-          </div>
 
-          <div style={{ display:"flex", background:"#e2e8f0", borderRadius:14, padding:4, marginBottom:18, gap:4, width:"100%", maxWidth:400 }}>
-            {[["counter","🌱 Contador"],["history",`📋 Proyecciones (${totalSessions})`]].map(([id,label]) => (
-              <button key={id} onClick={() => setTab(id)} style={{
-                flex:1, padding:"9px 0", borderRadius:11, border:"none", cursor:"pointer",
-                fontFamily:"inherit", fontWeight:800, fontSize:13,
-                background: tab===id ? "#fff" : "transparent",
-                color: tab===id ? "#4f46e5" : "#64748b",
-                boxShadow: tab===id ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
-              }}>{label}</button>
-            ))}
-          </div>
-
-          {tab === "counter" && (
-            <div style={{ width:"100%", maxWidth:400 }}>
-              <div style={{ background:"#fff", borderRadius:24, padding:"20px 16px", boxShadow:"0 4px 32px rgba(0,0,0,0.08)" }}>
-
-                <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>EVALUADOR</div>
-                  <input value={evaluador} onChange={e => setEvaluador(e.target.value)} placeholder="Nombre del evaluador" style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:15, fontWeight:700, fontFamily:"inherit", color:"#1e293b", outline:"none", boxSizing:"border-box", background:"#f8fafc" }} />
-                </div>
-
-                <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>FIELD</div>
-                  <input value={field} onChange={e => setField(e.target.value)} placeholder="Ej: North Field A" style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:15, fontWeight:700, fontFamily:"inherit", color:"#1e293b", outline:"none", boxSizing:"border-box", background:"#f8fafc" }} />
-                </div>
-
-                <div style={{ display:"flex", gap:10, marginBottom:14 }}>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>NÚMERO DE LÍNEA</div>
-                    <input value={linea} onChange={e => setLinea(e.target.value)} placeholder="Ej: 42" style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:15, fontWeight:700, fontFamily:"inherit", color:"#1e293b", outline:"none", boxSizing:"border-box", background:"#f8fafc" }} />
-                  </div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>VARIEDAD</div>
-                    <button onClick={() => setShowVariedades(v => !v)} style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:`1.5px solid ${variedad?"#4f46e5":"#e2e8f0"}`, fontSize:14, fontWeight:700, fontFamily:"inherit", color:variedad?"#4f46e5":"#94a3b8", background:variedad?"#eef2ff":"#f8fafc", textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                      <span>{variedad||"Seleccionar..."}</span>
-                      <span style={{ fontSize:10 }}>{showVariedades?"▲":"▼"}</span>
-                    </button>
-                    {showVariedades && (
-                      <div style={{ background:"#fff", borderRadius:12, marginTop:6, boxShadow:"0 8px 32px rgba(0,0,0,0.14)", overflow:"hidden", border:"1.5px solid #e2e8f0", zIndex:10, position:"relative" }}>
-                        {VARIEDADES.map(v => (
-                          <button key={v} onClick={() => { setVariedad(v); setShowVariedades(false); }} style={{ width:"100%", padding:"11px 14px", border:"none", borderBottom:"1px solid #f1f5f9", background:variedad===v?"#eef2ff":"#fff", color:variedad===v?"#4f46e5":"#1e293b", fontWeight:variedad===v?800:600, fontSize:14, fontFamily:"inherit", textAlign:"left", cursor:"pointer" }}>
-                            {variedad===v?"✓ ":""}{v}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
-                  {counts.map((c,i) => (
-                    <div key={i} style={{ flex:1, textAlign:"center" }}>
-                      <div style={{ fontSize:9, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:4 }}>COUNT {i}</div>
-                      <div style={{ fontSize:24, fontWeight:900, color:COLORS[i].text, transition:"transform 0.1s", transform:flash===i?"scale(1.35)":flash===`undo-${i}`?"scale(1.2)":"scale(1)", opacity:flash===`undo-${i}`?0.6:1 }}>{c}</div>
+            <div class="scores-section">
+                <!-- DAMAGE -->
+                <div class="score-row">
+                    <div class="score-title">
+                        <span>Damage (0.5 - 5)</span>
+                        <span class="score-value" id="val-damage">0.5</span>
                     </div>
-                  ))}
+                    <div class="rating-btns" id="btns-damage"></div>
                 </div>
 
-                <hr style={{ border:"none", borderTop:"1px solid #f1f5f9", margin:"12px 0" }} />
-
-                <div style={{ display:"flex", gap:10, marginBottom:10 }}>
-                  {[{label:"TOTAL PLANTAS",value:total},{label:"PROMEDIO",value:average}].map(({label,value}) => (
-                    <div key={label} style={{ flex:1, background:"#f8fafc", borderRadius:12, padding:"12px 8px", textAlign:"center" }}>
-                      <div style={{ fontSize:9, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:4 }}>{label}</div>
-                      <div style={{ fontSize:26, fontWeight:900, color:"#1e293b" }}>{value}</div>
+                <!-- GROUND -->
+                <div class="score-row">
+                    <div class="score-title">
+                        <span>Ground (0.5 - 5)</span>
+                        <span class="score-value" id="val-ground">0.5</span>
                     </div>
-                  ))}
+                    <div class="rating-btns" id="btns-ground"></div>
                 </div>
 
-                <hr style={{ border:"none", borderTop:"1px solid #f1f5f9", margin:"0 0 14px" }} />
-
-                <div style={{ display:"flex", gap:8, marginBottom:12 }}>
-                  {COLORS.map((c,i) => (
-                    <button key={i} onClick={() => handleCount(i)} style={{ flex:1, aspectRatio:"1", borderRadius:14, border:"none", background:flash===i?c.light:flash===`undo-${i}`?"#fee2e2":c.bg, color:flash===i?c.text:flash===`undo-${i}`?"#dc2626":"#fff", fontSize:20, fontWeight:900, cursor:"pointer", fontFamily:"inherit", transform:flash===i?"scale(0.92)":flash===`undo-${i}`?"scale(0.95)":"scale(1)", transition:"all 0.12s", boxShadow:flash===i?`0 0 0 3px ${c.bg}44`:"0 2px 8px rgba(0,0,0,0.15)" }}>{i}</button>
-                  ))}
+                <!-- TREE FRUIT -->
+                <div class="score-row">
+                    <div class="score-title">
+                        <span>Tree Fruit (0.5 - 5)</span>
+                        <span class="score-value" id="val-tree">0.5</span>
+                    </div>
+                    <div class="rating-btns" id="btns-tree"></div>
                 </div>
 
-                <button onClick={handleUndo} disabled={!undoHistory.length} style={{ width:"100%", padding:"12px", borderRadius:12, border:"none", background:!undoHistory.length?"#f1f5f9":"#fef3c7", color:!undoHistory.length?"#cbd5e1":"#d97706", fontSize:14, fontWeight:800, cursor:!undoHistory.length?"not-allowed":"pointer", fontFamily:"inherit", marginBottom:12, display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
-                  ↶ Deshacer última marca
-                  {undoHistory.length > 0 && <span style={{ background:"#f59e0b", color:"#fff", fontSize:11, fontWeight:900, borderRadius:8, padding:"2px 6px" }}>{undoHistory[undoHistory.length-1]}</span>}
-                </button>
-
-                <button onClick={handleSave} disabled={!total} style={{ width:"100%", padding:"15px", borderRadius:14, border:"none", background:saved?"#22c55e":!total?"#e2e8f0":"#4f46e5", color:!total?"#94a3b8":"#fff", fontSize:15, fontWeight:800, cursor:!total?"not-allowed":"pointer", fontFamily:"inherit", marginBottom:10, boxShadow:!total?"none":"0 4px 14px rgba(79,70,229,0.3)" }}>
-                  {saved ? "✅ ¡Proyección guardada!" : "💾 Guardar Proyección"}
-                </button>
-
-                <div onMouseDown={startHold} onMouseUp={cancelHold} onMouseLeave={cancelHold} onTouchStart={startHold} onTouchEnd={cancelHold} style={{ position:"relative", border:"2px solid #f43f5e", borderRadius:12, padding:"13px", textAlign:"center", cursor:"pointer", overflow:"hidden", userSelect:"none", WebkitUserSelect:"none" }}>
-                  <div style={{ position:"absolute", top:0, left:0, bottom:0, width:`${holdProgress*100}%`, background:"#fee2e2" }} />
-                  <div style={{ position:"relative", fontSize:14, fontWeight:800, color:"#f43f5e" }}>
-                    {isHolding ? `Reseteando... ${Math.ceil((1-holdProgress)*3)}s` : "Mantener para Resetear"}
-                  </div>
+                <div class="form-group full-width" style="margin-top: 12px;">
+                    <label>Comments</label>
+                    <textarea id="eval-comments" rows="2" placeholder="Observaciones adicionales..."></textarea>
                 </div>
-                <div style={{ textAlign:"center", fontSize:11, color:"#94a3b8", marginTop:6, fontWeight:600 }}>Mantén 3 segundos para limpiar el contador</div>
-              </div>
             </div>
-          )}
 
-          {tab === "history" && (
-            <div style={{ width:"100%", maxWidth:400 }}>
-              {sessions.length > 0 && (
-                <div style={{ display:"flex", gap:10, marginBottom:14 }}>
-                  {[{label:"SESIONES",value:totalSessions},{label:"TOTAL PLANTAS",value:grandTotal},{label:"TOTAL PRODUCCIÓN",value:grandFlowers}].map(({label,value}) => (
-                    <div key={label} style={{ flex:1, background:"#fff", borderRadius:14, padding:"12px 8px", textAlign:"center", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
-                      <div style={{ fontSize:8, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:4 }}>{label}</div>
-                      <div style={{ fontSize:20, fontWeight:900, color:"#4f46e5" }}>{value}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <button onClick={handleExport} disabled={!sessions.length} style={{ width:"100%", padding:"14px", borderRadius:14, border:"none", background:!sessions.length?"#e2e8f0":"#16a34a", color:!sessions.length?"#94a3b8":"#fff", fontSize:15, fontWeight:800, cursor:!sessions.length?"not-allowed":"pointer", fontFamily:"inherit", marginBottom:14, boxShadow:!sessions.length?"none":"0 4px 14px rgba(22,163,74,0.3)" }}>
-                📊 Descargar Excel ({sessions.length} proyecciones)
-              </button>
-
-              {!sessions.length ? (
-                <div style={{ background:"#fff", borderRadius:20, padding:"40px 20px", textAlign:"center", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
-                  <div style={{ fontSize:40, marginBottom:12 }}>🌾</div>
-                  <div style={{ fontWeight:800, color:"#64748b", fontSize:15 }}>Aún no hay proyecciones guardadas</div>
-                  <div style={{ color:"#94a3b8", fontSize:13, marginTop:6 }}>Guarda una proyección desde el Contador</div>
-                </div>
-              ) : (
-                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                  {sessions.map(s => (
-                    <div key={s.id} style={{ background:"#fff", borderRadius:16, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
-                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
-                        <div>
-                          <div style={{ fontWeight:800, color:"#1e293b", fontSize:13 }}>{fmtDate(s.date)}</div>
-                          {(s.evaluador||s.field||s.linea||s.variedad) && (
-                            <div style={{ fontSize:12, color:"#4f46e5", fontWeight:700, marginTop:2 }}>
-                              {s.evaluador?`👤 ${s.evaluador}`:""}{s.evaluador&&(s.field||s.linea||s.variedad)?" · ":""}
-                              {s.field?s.field:""}{s.field&&(s.linea||s.variedad)?" · ":""}
-                              {s.linea?`Línea ${s.linea}`:""}{s.linea&&s.variedad?" · ":""}{s.variedad}
-                            </div>
-                          )}
-                          <div style={{ fontSize:11, color:"#94a3b8", fontWeight:600, marginTop:2 }}>{s.total} plantas · {s.weightedSum} producción · prom. {s.average}</div>
-                        </div>
-                        <button onClick={() => handleDelete(s.id)} style={{ background:"#fee2e2", border:"none", borderRadius:8, padding:"5px 9px", cursor:"pointer", fontSize:12, color:"#f43f5e", fontWeight:800, fontFamily:"inherit" }}>✕</button>
-                      </div>
-                      <div style={{ display:"flex", gap:6 }}>
-                        {s.counts.map((c,i) => (
-                          <div key={i} style={{ flex:1, background:COLORS[i].light, borderRadius:8, padding:"6px 4px", textAlign:"center" }}>
-                            <div style={{ fontSize:8, fontWeight:800, color:COLORS[i].text, marginBottom:2 }}>C{i}</div>
-                            <div style={{ fontSize:16, fontWeight:900, color:COLORS[i].text }}>{c}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            <button class="action-btn btn-primary" onclick="saveRecord()">Guardar Registro</button>
         </div>
-      );
-    }
+    </div>
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-  </script>
+    <!-- PESTAÑA REGISTROS -->
+    <div id="tab-records" class="hidden">
+        <div class="card">
+            <button class="action-btn btn-success" onclick="exportToCSV()" style="margin-top:0; margin-bottom: 12px;">
+                📥 Exportar a Excel (.CSV)
+            </button>
+            <div id="records-list"></div>
+            <button class="action-btn btn-danger" onclick="clearAllRecords()">Borrar Todos los Registros</button>
+        </div>
+    </div>
+
+    <script>
+        const scores = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+        let currentScores = { damage: 0.5, ground: 0.5, tree: 0.5 };
+        let records = JSON.parse(localStorage.getItem('harvest_records') || '[]');
+
+        document.getElementById('eval-date').valueAsDate = new Date();
+
+        function createRatingButtons(containerId, key) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            scores.forEach(score => {
+                const btn = document.createElement('button');
+                btn.className = `rate-btn ${score === 0.5 ? 'active' : ''}`;
+                btn.innerText = score;
+                btn.onclick = () => {
+                    container.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentScores[key] = score;
+                    document.getElementById(`val-${key}`).innerText = score.toFixed(1);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        createRatingButtons('btns-damage', 'damage');
+        createRatingButtons('btns-ground', 'ground');
+        createRatingButtons('btns-tree', 'tree');
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(tab === 'eval') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-eval').classList.remove('hidden');
+                document.getElementById('tab-records').classList.add('hidden');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-eval').classList.add('hidden');
+                document.getElementById('tab-records').classList.remove('hidden');
+                renderRecords();
+            }
+        }
+
+        function saveRecord() {
+            const record = {
+                date: document.getElementById('eval-date').value,
+                observer: document.getElementById('eval-observer').value,
+                harvester: document.getElementById('eval-harvester').value,
+                shift: document.getElementById('eval-shift').value,
+                driver: document.getElementById('eval-driver').value,
+                field: document.getElementById('eval-field').value,
+                blockRow: document.getElementById('eval-blockrow').value,
+                variety: document.getElementById('eval-variety').value,
+                damage: currentScores.damage,
+                ground: currentScores.ground,
+                treeFruit: currentScores.tree,
+                comments: document.getElementById('eval-comments').value
+            };
+
+            records.push(record);
+            localStorage.setItem('harvest_records', JSON.stringify(records));
+            updateRecordCount();
+            alert('¡Registro guardado con éxito!');
+            
+            // Limpiar comentario
+            document.getElementById('eval-comments').value = '';
+        }
+
+        function updateRecordCount() {
+            document.getElementById('record-count').innerText = records.length;
+        }
+
+        function renderRecords() {
+            const list = document.getElementById('records-list');
+            list.innerHTML = '';
+            if(records.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No hay registros guardados.</p>';
+                return;
+            }
+            records.slice().reverse().forEach((r, idx) => {
+                const item = document.createElement('div');
+                item.className = 'record-card';
+                item.innerHTML = `
+                    <div class="record-header">
+                        <span>${r.field || 'Sin Campo'} (${r.blockRow || '-'})</span>
+                        <span>${r.date} [${r.shift}]</span>
+                    </div>
+                    <div><strong>Harvester:</strong> ${r.harvester || '-'} | <strong>Driver:</strong> ${r.driver || '-'} | <strong>Variety:</strong> ${r.variety || '-'}</div>
+                    <div class="record-scores" style="margin-top:6px;">
+                        <div>Damage: ${r.damage}</div>
+                        <div>Ground: ${r.ground}</div>
+                        <div>Tree: ${r.treeFruit}</div>
+                    </div>
+                    ${r.comments ? `<div style="margin-top:4px; font-style:italic; color:#475569;">"${r.comments}"</div>` : ''}
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function exportToCSV() {
+            if(records.length === 0) {
+                alert('No hay datos para exportar.');
+                return;
+            }
+            const headers = ["Date", "Harvester", "Shift", "Driver", "Field", "Block / Row", "Variety", "Damage (0.5-5)", "Ground (0.5-5)", "Tree Fruit (0.5-5)", "Observer", "Comments"];
+            const rows = records.map(r => [
+                `"${r.date}"`, `"${r.harvester}"`, `"${r.shift}"`, `"${r.driver}"`, `"${r.field}"`,
+                `"${r.blockRow}"`, `"${r.variety}"`, r.damage, r.ground, r.treeFruit,
+                `"${r.observer}"`, `"${r.comments.replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Harvest_Quality_Observations_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAllRecords() {
+            if(confirm('¿Estás seguro de borrar todos los registros acumulados?')) {
+                records = [];
+                localStorage.removeItem('harvest_records');
+                updateRecordCount();
+                renderRecords();
+            }
+        }
+
+        updateRecordCount();
+    </script>
 </body>
 </html>
