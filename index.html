@@ -1,623 +1,619 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Harvest Quality - Cobram Estate Olives</title>
-    <style>
-      :root {
-        --primary: #1e3a8a;
-        --primary-light: #eff6ff;
-        --bg: #f8fafc;
-        --card-bg: #ffffff;
-        --text: #0f172a;
-        --text-muted: #64748b;
-        --border: #e2e8f0;
-        --accent: #2563eb;
-        --success: #16a34a;
-        --danger: #dc2626;
-      }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Harvest Quality - Cobram Estate Olives</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #eff6ff;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        -webkit-tap-highlight-color: transparent;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-      body {
-        background-color: var(--bg);
-        color: var(--text);
-        padding: 16px;
-        padding-bottom: 40px;
-      }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      padding-bottom: 40px;
+    }
 
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-      }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-      /* Layout exacto de Canva */
-      header {
-        margin-bottom: 24px;
-        padding: 0 8px;
-      }
+    /* Layout Canva */
+    header {
+      margin-bottom: 24px;
+      padding: 0 8px;
+    }
 
-      .header-layout {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        align-items: center;
-        gap: 20px;
-      }
+    .header-layout {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 20px;
+    }
 
-      .logo-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 130px;
-      }
+    .logo-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 130px;
+    }
 
-      .logo-icon {
-        width: 80px;
-        height: 80px;
-      }
+    .logo-icon {
+      width: 80px;
+      height: 80px;
+    }
 
-      .logo-subtext {
-        font-size: 0.65rem;
-        color: var(--primary);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        font-weight: 800;
-        margin-top: 6px;
-        text-align: center;
-        line-height: 1.1;
-      }
+    .logo-subtext {
+      font-size: 0.65rem;
+      color: var(--primary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.1;
+    }
 
-      .title-box {
-        display: flex;
-        align-items: center;
-      }
+    .title-box {
+      display: flex;
+      align-items: center;
+    }
 
-      .title-box h1 {
-        font-size: 2.3rem;
-        color: var(--primary);
-        font-weight: 900;
-        line-height: 1;
-        margin: 0;
-        letter-spacing: -0.02em;
-      }
+    .title-box h1 {
+      font-size: 2.3rem;
+      color: var(--primary);
+      font-weight: 900;
+      line-height: 1;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
 
-      /* Tabs */
-      .tabs {
-        display: flex;
-        background: var(--border);
-        border-radius: 12px;
-        padding: 4px;
-        margin-bottom: 20px;
-      }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
 
-      .tab {
-        flex: 1;
-        text-align: center;
-        padding: 10px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-      .tab.active {
-        background: var(--card-bg);
-        color: var(--primary);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      }
+    .tab.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
 
-      .view-section {
-        display: none;
-      }
+    .view-section {
+      display: none;
+    }
 
-      .view-section.active {
-        display: block;
-      }
+    .view-section.active {
+      display: block;
+    }
 
-      /* Card Form */
-      .card {
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-        margin-bottom: 20px;
-        border: 1px solid var(--border);
-      }
+    /* Card Form */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
 
-      .form-group {
-        margin-bottom: 16px;
-      }
+    .form-group {
+      margin-bottom: 16px;
+    }
 
-      label {
-        display: block;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        margin-bottom: 6px;
-      }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
 
-      input, select, textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        font-size: 1rem;
-        color: var(--text);
-        background: var(--card-bg);
-        outline: none;
-        transition: border-color 0.2s;
-      }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--card-bg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
 
-      input:focus, select:focus, textarea:focus {
-        border-color: var(--accent);
-      }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
 
-      .row-inputs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
+    .row-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-      /* Rating Scale Buttons */
-      .scale-group {
-        margin-bottom: 20px;
-      }
+    /* Rating Scale Buttons */
+    .scale-group {
+      margin-bottom: 20px;
+    }
 
-      .scale-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
+    .scale-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
 
-      .scale-header label {
-        margin-bottom: 0;
-      }
+    .scale-header label {
+      margin-bottom: 0;
+    }
 
-      .scale-value {
-        font-weight: 700;
-        color: var(--accent);
-        background: var(--primary-light);
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-      }
+    .scale-value {
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
 
-      .scale-buttons {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
-      }
+    .scale-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
 
-      .scale-btn {
-        padding: 10px 0;
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--text);
-        cursor: pointer;
-        transition: all 0.15s;
-        text-align: center;
-      }
+    .scale-btn {
+      padding: 10px 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
 
-      .scale-btn.selected {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
-      }
+    .scale-btn.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
+    }
 
-      /* Submit Button */
-      .btn-primary {
-        width: 100%;
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 14px;
-        border-radius: 12px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
-        transition: background 0.2s;
-      }
+    /* Submit Button */
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
+      transition: background 0.2s;
+    }
 
-      .btn-primary:active {
-        transform: scale(0.98);
-      }
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
 
-      /* Records List */
-      .record-item {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 14px;
-        margin-bottom: 12px;
-        font-size: 0.9rem;
-      }
+    /* Records List */
+    .record-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
 
-      .record-header {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 700;
-        color: var(--primary);
-        margin-bottom: 6px;
-      }
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
 
-      .record-details {
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4px;
-      }
+    .record-details {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
 
-      /* Toast Notification */
-      #toast {
-        visibility: hidden;
-        min-width: 250px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 8px;
-        padding: 12px;
-        position: fixed;
-        z-index: 1;
-        left: 50%;
-        bottom: 30px;
-        transform: translateX(-50%);
-        font-size: 0.9rem;
-      }
+    /* Toast Notification */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 12px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+    }
 
-      #toast.show {
-        visibility: visible;
-        animation: fadein 0.5s, fadeout 0.5s 2.5s;
-      }
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
 
-      @keyframes fadein {
-        from { bottom: 0; opacity: 0; }
-        to { bottom: 30px; opacity: 1; }
-      }
+    @keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 30px; opacity: 1; }
+    }
 
-      @keyframes fadeout {
-        from { bottom: 30px; opacity: 1; }
-        to { bottom: 0; opacity: 0; }
-      }
-    </style>
-  </head>
-  <body>
+    @keyframes fadeout {
+      from { bottom: 30px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
 
-    <div class="container">
-      <header>
-        <div class="header-layout">
-          <div class="logo-box">
-            <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="46" fill="none" stroke="#0f172a" stroke-width="2"/>
-              <circle cx="50" cy="50" r="41" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-              <circle cx="50" cy="50" r="36" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-              <circle cx="50" cy="50" r="31" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-              <circle cx="50" cy="50" r="26" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-              <circle cx="50" cy="50" r="21" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-              <circle cx="50" cy="50" r="16" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-              <circle cx="50" cy="50" r="11" fill="#0f172a"/>
-              <path d="M47 43 C52 41 55 46 53 51 C51 55 45 54 44 49 Z" fill="#ffffff"/>
-              <path d="M52 41 Q55 37 57 39" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <div class="logo-subtext">COBRAM ESTATE OLIVES</div>
-          </div>
-
-          <div class="title-box">
-            <h1>Harvest Quality</h1>
-          </div>
+  <div class="container">
+    <header>
+      <div class="header-layout">
+        <div class="logo-box">
+          <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <circle cx="50" cy="50" r="41" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="36" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="31" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="26" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="21" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="16" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="11" fill="#0f172a"/>
+            <path d="M47 43 C52 41 55 46 53 51 C51 55 45 54 44 49 Z" fill="#ffffff"/>
+            <path d="M52 41 Q55 37 57 39" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="logo-subtext">COBRAM ESTATE OLIVES</div>
         </div>
-      </header>
 
-      <!-- Navigation Tabs -->
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab('form')">Evaluation</div>
-        <div class="tab" onclick="switchTab('records')" id="records-tab-label">Records (0)</div>
-      </div>
-
-      <!-- Evaluation Form Section -->
-      <div id="form-section" class="view-section active">
-        <div class="card">
-          <form id="qualityForm" onsubmit="handleSubmit(event)">
-            
-            <div class="row-inputs">
-              <div class="form-group">
-                <label for="date">Date</label>
-                <input type="date" id="date" required>
-              </div>
-              <div class="form-group">
-                <label for="observer">Observer</label>
-                <input type="text" id="observer" placeholder="Observer Name" required>
-              </div>
-            </div>
-
-            <div class="row-inputs">
-              <div class="form-group">
-                <label for="harvester">Harvester</label>
-                <input type="text" id="harvester" placeholder="e.g., H-01" required>
-              </div>
-              <div class="form-group">
-                <label for="shift">Shift</label>
-                <select id="shift">
-                  <option value="AM">AM</option>
-                  <option value="PM">PM</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row-inputs">
-              <div class="form-group">
-                <label for="driver">Driver</label>
-                <input type="text" id="driver" placeholder="Driver Name" required>
-              </div>
-              <div class="form-group">
-                <label for="field">Field</label>
-                <input type="text" id="field" placeholder="e.g., North Field A" required>
-              </div>
-            </div>
-
-            <div class="row-inputs">
-              <div class="form-group">
-                <label for="blockRow">Block / Row</label>
-                <input type="text" id="blockRow" placeholder="e.g., B12 / R04" required>
-              </div>
-              <div class="form-group">
-                <label for="variety">Variety</label>
-                <select id="variety" required>
-                  <option value="" disabled selected>Select variety...</option>
-                  <option value="Arbequina">Arbequina</option>
-                  <option value="Arbosana">Arbosana</option>
-                  <option value="Cerasuola">Cerasuola</option>
-                  <option value="Coratina">Coratina</option>
-                  <option value="Coriana">Coriana</option>
-                  <option value="Chemlali">Chemlali</option>
-                  <option value="Hojiblanca">Hojiblanca</option>
-                  <option value="I - 15">I - 15</option>
-                  <option value="Koroneiki">Koroneiki</option>
-                  <option value="Lecciana">Lecciana</option>
-                  <option value="Manzanillo">Manzanillo</option>
-                  <option value="Mission">Mission</option>
-                  <option value="Picual">Picual</option>
-                  <option value="Picudo">Picudo</option>
-                  <option value="Sikitita">Sikitita</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Scale: Damage -->
-            <div class="scale-group">
-              <div class="scale-header">
-                <label>Damage (0.5 - 5)</label>
-                <span class="scale-value" id="val-damage">0.5</span>
-              </div>
-              <div class="scale-buttons" id="btns-damage">
-                <button type="button" class="scale-btn selected" onclick="selectScale('damage', '0.5')">0.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '1')">1</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '1.5')">1.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '2')">2</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '2.5')">2.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '3')">3</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '3.5')">3.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '4')">4</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '4.5')">4.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('damage', '5')">5</button>
-              </div>
-            </div>
-
-            <!-- Scale: Ground -->
-            <div class="scale-group">
-              <div class="scale-header">
-                <label>Ground (0.5 - 5)</label>
-                <span class="scale-value" id="val-ground">0.5</span>
-              </div>
-              <div class="scale-buttons" id="btns-ground">
-                <button type="button" class="scale-btn selected" onclick="selectScale('ground', '0.5')">0.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '1')">1</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '1.5')">1.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '2')">2</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '2.5')">2.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '3')">3</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '3.5')">3.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '4')">4</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '4.5')">4.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('ground', '5')">5</button>
-              </div>
-            </div>
-
-            <!-- Scale: Tree Fruit -->
-            <div class="scale-group">
-              <div class="scale-header">
-                <label>Tree Fruit (0.5 - 5)</label>
-                <span class="scale-value" id="val-treeFruit">0.5</span>
-              </div>
-              <div class="scale-buttons" id="btns-treeFruit">
-                <button type="button" class="scale-btn selected" onclick="selectScale('treeFruit', '0.5')">0.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '1')">1</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '1.5')">1.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '2')">2</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '2.5')">2.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '3')">3</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '3.5')">3.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '4')">4</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '4.5')">4.5</button>
-                <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '5')">5</button>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="comments">Comments</label>
-              <textarea id="comments" rows="3" placeholder="Additional observations..."></textarea>
-            </div>
-
-            <button type="submit" class="btn-primary" id="submitBtn">Save Record</button>
-          </form>
+        <div class="title-box">
+          <h1>Harvest Quality</h1>
         </div>
       </div>
+    </header>
 
-      <!-- Records History Section -->
-      <div id="records-section" class="view-section">
-        <div id="recordsList"></div>
-      </div>
-
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('form')">Evaluation</div>
+      <div class="tab" onclick="switchTab('records')" id="records-tab-label">Records (0)</div>
     </div>
 
-    <div id="toast">Record saved successfully</div>
+    <!-- Evaluation Form Section -->
+    <div id="form-section" class="view-section active">
+      <div class="card">
+        <form id="qualityForm" onsubmit="handleSubmit(event)">
+          
+          <div class="row-inputs">
+            <div class="form-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+              <label for="observer">Observer</label>
+              <input type="text" id="observer" placeholder="Observer Name" required>
+            </div>
+          </div>
 
-    <script>
-      // Set default date to today
-      document.getElementById('date').valueAsDate = new Date();
+          <div class="row-inputs">
+            <div class="form-group">
+              <label for="harvester">Harvester</label>
+              <input type="text" id="harvester" placeholder="e.g., H-01" required>
+            </div>
+            <div class="form-group">
+              <label for="shift">Shift</label>
+              <select id="shift">
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
 
-      const scores = {
-        damage: '0.5',
-        ground: '0.5',
-        treeFruit: '0.5'
+          <div class="row-inputs">
+            <div class="form-group">
+              <label for="driver">Driver</label>
+              <input type="text" id="driver" placeholder="Driver Name" required>
+            </div>
+            <div class="form-group">
+              <label for="field">Field</label>
+              <input type="text" id="field" placeholder="e.g., North Field A" required>
+            </div>
+          </div>
+
+          <div class="row-inputs">
+            <div class="form-group">
+              <label for="blockRow">Block / Row</label>
+              <input type="text" id="blockRow" placeholder="e.g., B12 / R04" required>
+            </div>
+            <div class="form-group">
+              <label for="variety">Variety</label>
+              <select id="variety" required>
+                <option value="" disabled selected>Select variety...</option>
+                <option value="Arbequina">Arbequina</option>
+                <option value="Arbosana">Arbosana</option>
+                <option value="Cerasuola">Cerasuola</option>
+                <option value="Coratina">Coratina</option>
+                <option value="Coriana">Coriana</option>
+                <option value="Chemlali">Chemlali</option>
+                <option value="Hojiblanca">Hojiblanca</option>
+                <option value="I - 15">I - 15</option>
+                <option value="Koroneiki">Koroneiki</option>
+                <option value="Lecciana">Lecciana</option>
+                <option value="Manzanillo">Manzanillo</option>
+                <option value="Mission">Mission</option>
+                <option value="Picual">Picual</option>
+                <option value="Picudo">Picudo</option>
+                <option value="Sikitita">Sikitita</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Scale: Damage -->
+          <div class="scale-group">
+            <div class="scale-header">
+              <label>Damage (0.5 - 5)</label>
+              <span class="scale-value" id="val-damage">0.5</span>
+            </div>
+            <div class="scale-buttons" id="btns-damage">
+              <button type="button" class="scale-btn selected" onclick="selectScale('damage', '0.5')">0.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '1')">1</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '1.5')">1.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '2')">2</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '2.5')">2.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '3')">3</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '3.5')">3.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '4')">4</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '4.5')">4.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('damage', '5')">5</button>
+            </div>
+          </div>
+
+          <!-- Scale: Ground -->
+          <div class="scale-group">
+            <div class="scale-header">
+              <label>Ground (0.5 - 5)</label>
+              <span class="scale-value" id="val-ground">0.5</span>
+            </div>
+            <div class="scale-buttons" id="btns-ground">
+              <button type="button" class="scale-btn selected" onclick="selectScale('ground', '0.5')">0.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '1')">1</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '1.5')">1.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '2')">2</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '2.5')">2.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '3')">3</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '3.5')">3.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '4')">4</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '4.5')">4.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('ground', '5')">5</button>
+            </div>
+          </div>
+
+          <!-- Scale: Tree Fruit -->
+          <div class="scale-group">
+            <div class="scale-header">
+              <label>Tree Fruit (0.5 - 5)</label>
+              <span class="scale-value" id="val-treeFruit">0.5</span>
+            </div>
+            <div class="scale-buttons" id="btns-treeFruit">
+              <button type="button" class="scale-btn selected" onclick="selectScale('treeFruit', '0.5')">0.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '1')">1</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '1.5')">1.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '2')">2</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '2.5')">2.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '3')">3</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '3.5')">3.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '4')">4</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '4.5')">4.5</button>
+              <button type="button" class="scale-btn" onclick="selectScale('treeFruit', '5')">5</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="comments">Comments</label>
+            <textarea id="comments" rows="3" placeholder="Additional observations..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBtn">Save Record</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Records History Section -->
+    <div id="records-section" class="view-section">
+      <div id="recordsList"></div>
+    </div>
+
+  </div>
+
+  <div id="toast">Record saved successfully</div>
+
+  <script>
+    // Set default date to today
+    document.getElementById('date').valueAsDate = new Date();
+
+    const scores = {
+      damage: '0.5',
+      ground: '0.5',
+      treeFruit: '0.5'
+    };
+
+    function selectScale(category, value) {
+      scores[category] = value;
+      document.getElementById(`val-${category}`).innerText = value;
+      
+      const container = document.getElementById(`btns-${category}`);
+      const buttons = container.getElementsByClassName('scale-btn');
+      for (let btn of buttons) {
+        if (btn.innerText === value) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      }
+    }
+
+    function switchTab(tabName) {
+      const formSec = document.getElementById('form-section');
+      const recSec = document.getElementById('records-section');
+      const tabs = document.querySelectorAll('.tab');
+
+      tabs[0].classList.toggle('active', tabName === 'form');
+      tabs[1].classList.toggle('active', tabName === 'records');
+
+      formSec.classList.toggle('active', tabName === 'form');
+      recSec.classList.toggle('active', tabName === 'records');
+
+      if (tabName === 'records') {
+        renderRecords();
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.className = "show";
+      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    let localRecords = JSON.parse(localStorage.getItem('harvest_records') || '[]');
+    updateRecordCount();
+
+    function updateRecordCount() {
+      document.getElementById('records-tab-label').innerText = `Records (${localRecords.length})`;
+    }
+
+    // Aquí va tu URL de Google Apps Script vinculada a tu hoja de cálculo
+    const GOOGLE_SCRIPT_URL = "AQUÍ_VA_TU_URL_DE_APPS_SCRIPT";
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = "Saving...";
+      btn.disabled = true;
+
+      const record = {
+        date: document.getElementById('date').value,
+        observer: document.getElementById('observer').value,
+        harvester: document.getElementById('harvester').value,
+        shift: document.getElementById('shift').value,
+        driver: document.getElementById('driver').value,
+        field: document.getElementById('field').value,
+        blockRow: document.getElementById('blockRow').value,
+        variety: document.getElementById('variety').value,
+        damage: scores.damage,
+        ground: scores.ground,
+        treeFruit: scores.treeFruit,
+        comments: document.getElementById('comments').value
       };
 
-      function selectScale(category, value) {
-        scores[category] = value;
-        document.getElementById(`val-${category}`).innerText = value;
-        
-        const container = document.getElementById(`btns-${category}`);
-        const buttons = container.getElementsByClassName('scale-btn');
-        for (let btn of buttons) {
-          if (btn.innerText === value) {
-            btn.classList.add('selected');
-          } else {
-            btn.classList.remove('selected');
-          }
-        }
-      }
-
-      function switchTab(tabName) {
-        const formSec = document.getElementById('form-section');
-        const recSec = document.getElementById('records-section');
-        const tabs = document.querySelectorAll('.tab');
-
-        tabs[0].classList.toggle('active', tabName === 'form');
-        tabs[1].classList.toggle('active', tabName === 'records');
-
-        formSec.classList.toggle('active', tabName === 'form');
-        recSec.classList.toggle('active', tabName === 'records');
-
-        if (tabName === 'records') {
-          renderRecords();
-        }
-      }
-
-      function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.innerText = message;
-        toast.className = "show";
-        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-      }
-
-      let localRecords = JSON.parse(localStorage.getItem('harvest_records') || '[]');
-      updateRecordCount();
-
-      function updateRecordCount() {
-        document.getElementById('records-tab-label').innerText = `Records (${localRecords.length})`;
-      }
-
-      const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
-
-      async function handleSubmit(event) {
-        event.preventDefault();
-        
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "Saving...";
-        btn.disabled = true;
-
-        const record = {
-          date: document.getElementById('date').value,
-          observer: document.getElementById('observer').value,
-          harvester: document.getElementById('harvester').value,
-          shift: document.getElementById('shift').value,
-          driver: document.getElementById('driver').value,
-          field: document.getElementById('field').value,
-          blockRow: document.getElementById('blockRow').value,
-          variety: document.getElementById('variety').value,
-          damage: scores.damage,
-          ground: scores.ground,
-          treeFruit: scores.treeFruit,
-          comments: document.getElementById('comments').value
-        };
-
-        try {
-          if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_SCRIPT_URL_HERE") {
-            await fetch(GOOGLE_SCRIPT_URL, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(record)
-            });
-          }
-
-          localRecords.unshift(record);
-          localStorage.setItem('harvest_records', JSON.stringify(localRecords));
-          updateRecordCount();
-
-          showToast("Record successfully saved to Sheets!");
-          document.getElementById('qualityForm').reset();
-          document.getElementById('date').valueAsDate = new Date();
-          selectScale('damage', '0.5');
-          selectScale('ground', '0.5');
-          selectScale('treeFruit', '0.5');
-
-        } catch (error) {
-          console.error(error);
-          showToast("Error saving record. Check connection.");
-        } finally {
-          btn.innerText = "Save Record";
-          btn.disabled = false;
-        }
-      }
-
-      function renderRecords() {
-        const container = document.getElementById('recordsList');
-        if (localRecords.length === 0) {
-          container.innerHTML = '<div class="card" style="text-align: center; color: #64748b;">No records saved yet.</div>';
-          return;
+      try {
+        if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "AQUÍ_VA_TU_URL_DE_APPS_SCRIPT") {
+          await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          });
         }
 
-        container.innerHTML = localRecords.map(r => `
-          <div class="record-item">
-            <div class="record-header">
-              <span>${r.field} - ${r.blockRow}</span>
-              <span>${r.date}</span>
-            </div>
-            <div class="record-details">
-              <div><strong>Variety:</strong> ${r.variety}</div>
-              <div><strong>Shift:</strong> ${r.shift}</div>
-              <div><strong>Harvester:</strong> ${r.harvester}</div>
-              <div><strong>Driver:</strong> ${r.driver}</div>
-              <div><strong>Observer:</strong> ${r.observer}</div>
-              <div><strong>D:</strong> ${r.damage} | <strong>G:</strong> ${r.ground} | <strong>T:</strong> ${r.treeFruit}</div>
-            </div>
-            ${r.comments ? `<div style="margin-top: 6px; font-size: 0.8rem; color: #334155;"><strong>Notes:</strong> ${r.comments}</div>` : ''}
+        localRecords.unshift(record);
+        localStorage.setItem('harvest_records', JSON.stringify(localRecords));
+        updateRecordCount();
+
+        showToast("Record successfully saved to Sheets!");
+        document.getElementById('qualityForm').reset();
+        document.getElementById('date').valueAsDate = new Date();
+        selectScale('damage', '0.5');
+        selectScale('ground', '0.5');
+        selectScale('treeFruit', '0.5');
+
+      } catch (error) {
+        console.error(error);
+        showToast("Error saving record. Check connection.");
+      } finally {
+        btn.innerText = "Save Record";
+        btn.disabled = false;
+      }
+    }
+
+    function renderRecords() {
+      const container = document.getElementById('recordsList');
+      if (localRecords.length === 0) {
+        container.innerHTML = '<div class="card" style="text-align: center; color: #64748b;">No records saved yet.</div>';
+        return;
+      }
+
+      container.innerHTML = localRecords.map(r => `
+        <div class="record-item">
+          <div class="record-header">
+            <span>${r.field} - ${r.blockRow}</span>
+            <span>${r.date}</span>
           </div>
-        `).join('');
-      }
-    </script>
-  </body>
-  </html>
-  ```
-
-  ---
-
- 
+          <div class="record-details">
+            <div><strong>Variety:</strong> ${r.variety}</div>
+            <div><strong>Shift:</strong> ${r.shift}</div>
+            <div><strong>Harvester:</strong> ${r.harvester}</div>
+            <div><strong>Driver:</strong> ${r.driver}</div>
+            <div><strong>Observer:</strong> ${r.observer}</div>
+            <div><strong>D:</strong> ${r.damage} | <strong>G:</strong> ${r.ground} | <strong>T:</strong> ${r.treeFruit}</div>
+          </div>
+          ${r.comments ? `<div style="margin-top: 6px; font-size: 0.8rem; color: #334155;"><strong>Notes:</strong> ${r.comments}</div>` : ''}
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
