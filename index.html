@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop Projection – Cobram Estate Olives</title>
+  <meta name="theme-color" content="#e8f5e9" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Crop Projection" />
+  <link rel="manifest" href="manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #e8f5e9; font-family: 'Nunito', sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useRef } = React;
+
+    const COLORS = [
+      { bg: "#5a6478", light: "#eef0f4", text: "#5a6478" },
+      { bg: "#3b82f6", light: "#eff6ff", text: "#3b82f6" },
+      { bg: "#22c55e", light: "#f0fdf4", text: "#22c55e" },
+      { bg: "#f59e0b", light: "#fffbeb", text: "#f59e0b" },
+      { bg: "#f43f5e", light: "#fff1f2", text: "#f43f5e" },
+    ];
+
+    const VARIEDADES = ["Arbequina","Coratina","Picual","Manzanilla","Misión","Arbosana","Koroneiki","Hojiblanca","Picudo","Chemlali","Cerasoula","Sikitita","Lecciana","Nocellara","I-15"];
+
+    const STORAGE_KEY = "crop_projection_sessions_v1";
+    function loadSessions() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+    }
+    function saveSessions(s) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
+    }
+    function fmtDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" }) +
+        " " + d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function App() {
+      const [tab, setTab] = useState("counter");
+      const [counts, setCounts] = useState([0,0,0,0,0]);
+      const [sessions, setSessions] = useState(loadSessions);
+      const [flash, setFlash] = useState(null);
+      const [holdProgress, setHoldProgress] = useState(0);
+      const [isHolding, setIsHolding] = useState(false);
+      const [saved, setSaved] = useState(false);
+      const [undoHistory, setUndoHistory] = useState([]);
+      const [evaluador, setEvaluador] = useState("");
+      const [linea, setLinea] = useState("");
+      const [field, setField] = useState("");
+      const [variedad, setVariedad] = useState("");
+      const [showVariedades, setShowVariedades] = useState(false);
+      const animFrame = useRef(null);
+      const holdStart = useRef(null);
+
+      const total = counts.reduce((a,b) => a+b, 0);
+      const weightedSum = counts.reduce((acc,c,i) => acc+c*i, 0);
+      const average = total > 0 ? (weightedSum/total).toFixed(2) : "0.00";
+
+      React.useEffect(() => { saveSessions(sessions); }, [sessions]);
+
+      const handleCount = (idx) => {
+        setCounts(prev => { const n=[...prev]; n[idx]++; return n; });
+        setUndoHistory(prev => [...prev, idx]);
+        setFlash(idx); setTimeout(() => setFlash(null), 180);
+      };
+      const handleUndo = () => {
+        if (!undoHistory.length) return;
+        const last = undoHistory[undoHistory.length-1];
+        setCounts(prev => { const n=[...prev]; n[last]--; return n; });
+        setUndoHistory(prev => prev.slice(0,-1));
+        setFlash(`undo-${last}`); setTimeout(() => setFlash(null), 180);
+      };
+      const handleSave = () => {
+        if (!total) return;
+        const session = { id: Date.now(), date: new Date().toISOString(), evaluador, field, linea, variedad, counts: [...counts], total, weightedSum, average };
+        setSessions(prev => [session, ...prev]);
+        setCounts([0,0,0,0,0]); setUndoHistory([]); setSaved(true); setTimeout(() => setSaved(false), 2000);
+      };
+      const handleDelete = (id) => setSessions(prev => prev.filter(s => s.id !== id));
+      const handleExport = () => {
+        if (!sessions.length) return;
+        const rows = sessions.map((s,i) => ({
+          "#": sessions.length-i, "Fecha": fmtDate(s.date), "Evaluador": s.evaluador||"",
+          "Field": s.field||"", "Línea": s.linea||"", "Variedad": s.variedad||"",
+          "Count 0": s.counts[0], "Count 1": s.counts[1], "Count 2": s.counts[2],
+          "Count 3": s.counts[3], "Count 4": s.counts[4],
+          "Total Plantas": s.total, "Total Producción": s.weightedSum, "Promedio": parseFloat(s.average),
+        }));
+        const gP = sessions.reduce((a,s) => a+s.total, 0);
+        const gF = sessions.reduce((a,s) => a+s.weightedSum, 0);
+        rows.push({ "#":"", "Fecha":"TOTALES", "Evaluador":"", "Field":"", "Línea":"", "Variedad":"",
+          "Count 0": sessions.reduce((a,s)=>a+s.counts[0],0),
+          "Count 1": sessions.reduce((a,s)=>a+s.counts[1],0),
+          "Count 2": sessions.reduce((a,s)=>a+s.counts[2],0),
+          "Count 3": sessions.reduce((a,s)=>a+s.counts[3],0),
+          "Count 4": sessions.reduce((a,s)=>a+s.counts[4],0),
+          "Total Plantas": gP, "Total Producción": gF, "Promedio": parseFloat((gF/gP).toFixed(2)),
+        });
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Conteo");
+        XLSX.writeFile(wb, `crop_projection_${new Date().toISOString().slice(0,10)}.xlsx`);
+      };
+
+      const startHold = () => {
+        setIsHolding(true); holdStart.current = Date.now();
+        const animate = () => {
+          const p = Math.min((Date.now()-holdStart.current)/3000, 1);
+          setHoldProgress(p);
+          if (p < 1) { animFrame.current = requestAnimationFrame(animate); }
+          else { setCounts([0,0,0,0,0]); setUndoHistory([]); setIsHolding(false); setHoldProgress(0); }
+        };
+        animFrame.current = requestAnimationFrame(animate);
+      };
+      const cancelHold = () => { setIsHolding(false); setHoldProgress(0); cancelAnimationFrame(animFrame.current); };
+
+      const totalSessions = sessions.length;
+      const grandTotal = sessions.reduce((a,s) => a+s.total, 0);
+      const grandFlowers = sessions.reduce((a,s) => a+s.weightedSum, 0);
+
+      return (
+        <div style={{ minHeight:"100vh", background:"#e8f5e9", display:"flex", flexDirection:"column", alignItems:"center", fontFamily:"'Nunito',sans-serif", padding:"20px 16px 40px" }}>
+          <div style={{ textAlign:"center", marginBottom:20 }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginBottom:4 }}>
+              <svg width="60" height="60" viewBox="0 0 100 100" style={{ opacity:0.9 }}>
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="36" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="32" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="28" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="24" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="20" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="16" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <circle cx="50" cy="50" r="12" fill="none" stroke="#1e293b" strokeWidth="1"/>
+                <ellipse cx="50" cy="48" rx="4" ry="5" fill="#1e293b"/>
+                <rect x="49.5" y="42" width="1" height="3" fill="#1e293b"/>
+                <ellipse cx="50" cy="42" rx="1.5" ry="1" fill="#1e293b"/>
+              </svg>
+              <div style={{ fontSize:32, fontWeight:900, color:"#1e293b", letterSpacing:"-1px" }}>Crop Projection</div>
+            </div>
+            <div style={{ fontSize:26, color:"#1e293b", fontWeight:800, marginTop:2 }}>Cobram Estate Olives</div>
+          </div>
+
+          <div style={{ display:"flex", background:"#e2e8f0", borderRadius:14, padding:4, marginBottom:18, gap:4, width:"100%", maxWidth:400 }}>
+            {[["counter","🌱 Contador"],["history",`📋 Proyecciones (${totalSessions})`]].map(([id,label]) => (
+              <button key={id} onClick={() => setTab(id)} style={{
+                flex:1, padding:"9px 0", borderRadius:11, border:"none", cursor:"pointer",
+                fontFamily:"inherit", fontWeight:800, fontSize:13,
+                background: tab===id ? "#fff" : "transparent",
+                color: tab===id ? "#4f46e5" : "#64748b",
+                boxShadow: tab===id ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+              }}>{label}</button>
+            ))}
+          </div>
+
+          {tab === "counter" && (
+            <div style={{ width:"100%", maxWidth:400 }}>
+              <div style={{ background:"#fff", borderRadius:24, padding:"20px 16px", boxShadow:"0 4px 32px rgba(0,0,0,0.08)" }}>
+
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>EVALUADOR</div>
+                  <input value={evaluador} onChange={e => setEvaluador(e.target.value)} placeholder="Nombre del evaluador" style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:15, fontWeight:700, fontFamily:"inherit", color:"#1e293b", outline:"none", boxSizing:"border-box", background:"#f8fafc" }} />
+                </div>
+
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>FIELD</div>
+                  <input value={field} onChange={e => setField(e.target.value)} placeholder="Ej: North Field A" style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:15, fontWeight:700, fontFamily:"inherit", color:"#1e293b", outline:"none", boxSizing:"border-box", background:"#f8fafc" }} />
+                </div>
+
+                <div style={{ display:"flex", gap:10, marginBottom:14 }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>NÚMERO DE LÍNEA</div>
+                    <input value={linea} onChange={e => setLinea(e.target.value)} placeholder="Ej: 42" style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:15, fontWeight:700, fontFamily:"inherit", color:"#1e293b", outline:"none", boxSizing:"border-box", background:"#f8fafc" }} />
+                  </div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:10, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:5 }}>VARIEDAD</div>
+                    <button onClick={() => setShowVariedades(v => !v)} style={{ width:"100%", padding:"10px 12px", borderRadius:10, border:`1.5px solid ${variedad?"#4f46e5":"#e2e8f0"}`, fontSize:14, fontWeight:700, fontFamily:"inherit", color:variedad?"#4f46e5":"#94a3b8", background:variedad?"#eef2ff":"#f8fafc", textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                      <span>{variedad||"Seleccionar..."}</span>
+                      <span style={{ fontSize:10 }}>{showVariedades?"▲":"▼"}</span>
+                    </button>
+                    {showVariedades && (
+                      <div style={{ background:"#fff", borderRadius:12, marginTop:6, boxShadow:"0 8px 32px rgba(0,0,0,0.14)", overflow:"hidden", border:"1.5px solid #e2e8f0", zIndex:10, position:"relative" }}>
+                        {VARIEDADES.map(v => (
+                          <button key={v} onClick={() => { setVariedad(v); setShowVariedades(false); }} style={{ width:"100%", padding:"11px 14px", border:"none", borderBottom:"1px solid #f1f5f9", background:variedad===v?"#eef2ff":"#fff", color:variedad===v?"#4f46e5":"#1e293b", fontWeight:variedad===v?800:600, fontSize:14, fontFamily:"inherit", textAlign:"left", cursor:"pointer" }}>
+                            {variedad===v?"✓ ":""}{v}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+                  {counts.map((c,i) => (
+                    <div key={i} style={{ flex:1, textAlign:"center" }}>
+                      <div style={{ fontSize:9, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:4 }}>COUNT {i}</div>
+                      <div style={{ fontSize:24, fontWeight:900, color:COLORS[i].text, transition:"transform 0.1s", transform:flash===i?"scale(1.35)":flash===`undo-${i}`?"scale(1.2)":"scale(1)", opacity:flash===`undo-${i}`?0.6:1 }}>{c}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <hr style={{ border:"none", borderTop:"1px solid #f1f5f9", margin:"12px 0" }} />
+
+                <div style={{ display:"flex", gap:10, marginBottom:10 }}>
+                  {[{label:"TOTAL PLANTAS",value:total},{label:"PROMEDIO",value:average}].map(({label,value}) => (
+                    <div key={label} style={{ flex:1, background:"#f8fafc", borderRadius:12, padding:"12px 8px", textAlign:"center" }}>
+                      <div style={{ fontSize:9, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:4 }}>{label}</div>
+                      <div style={{ fontSize:26, fontWeight:900, color:"#1e293b" }}>{value}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <hr style={{ border:"none", borderTop:"1px solid #f1f5f9", margin:"0 0 14px" }} />
+
+                <div style={{ display:"flex", gap:8, marginBottom:12 }}>
+                  {COLORS.map((c,i) => (
+                    <button key={i} onClick={() => handleCount(i)} style={{ flex:1, aspectRatio:"1", borderRadius:14, border:"none", background:flash===i?c.light:flash===`undo-${i}`?"#fee2e2":c.bg, color:flash===i?c.text:flash===`undo-${i}`?"#dc2626":"#fff", fontSize:20, fontWeight:900, cursor:"pointer", fontFamily:"inherit", transform:flash===i?"scale(0.92)":flash===`undo-${i}`?"scale(0.95)":"scale(1)", transition:"all 0.12s", boxShadow:flash===i?`0 0 0 3px ${c.bg}44`:"0 2px 8px rgba(0,0,0,0.15)" }}>{i}</button>
+                  ))}
+                </div>
+
+                <button onClick={handleUndo} disabled={!undoHistory.length} style={{ width:"100%", padding:"12px", borderRadius:12, border:"none", background:!undoHistory.length?"#f1f5f9":"#fef3c7", color:!undoHistory.length?"#cbd5e1":"#d97706", fontSize:14, fontWeight:800, cursor:!undoHistory.length?"not-allowed":"pointer", fontFamily:"inherit", marginBottom:12, display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+                  ↶ Deshacer última marca
+                  {undoHistory.length > 0 && <span style={{ background:"#f59e0b", color:"#fff", fontSize:11, fontWeight:900, borderRadius:8, padding:"2px 6px" }}>{undoHistory[undoHistory.length-1]}</span>}
+                </button>
+
+                <button onClick={handleSave} disabled={!total} style={{ width:"100%", padding:"15px", borderRadius:14, border:"none", background:saved?"#22c55e":!total?"#e2e8f0":"#4f46e5", color:!total?"#94a3b8":"#fff", fontSize:15, fontWeight:800, cursor:!total?"not-allowed":"pointer", fontFamily:"inherit", marginBottom:10, boxShadow:!total?"none":"0 4px 14px rgba(79,70,229,0.3)" }}>
+                  {saved ? "✅ ¡Proyección guardada!" : "💾 Guardar Proyección"}
+                </button>
+
+                <div onMouseDown={startHold} onMouseUp={cancelHold} onMouseLeave={cancelHold} onTouchStart={startHold} onTouchEnd={cancelHold} style={{ position:"relative", border:"2px solid #f43f5e", borderRadius:12, padding:"13px", textAlign:"center", cursor:"pointer", overflow:"hidden", userSelect:"none", WebkitUserSelect:"none" }}>
+                  <div style={{ position:"absolute", top:0, left:0, bottom:0, width:`${holdProgress*100}%`, background:"#fee2e2" }} />
+                  <div style={{ position:"relative", fontSize:14, fontWeight:800, color:"#f43f5e" }}>
+                    {isHolding ? `Reseteando... ${Math.ceil((1-holdProgress)*3)}s` : "Mantener para Resetear"}
+                  </div>
+                </div>
+                <div style={{ textAlign:"center", fontSize:11, color:"#94a3b8", marginTop:6, fontWeight:600 }}>Mantén 3 segundos para limpiar el contador</div>
+              </div>
+            </div>
+          )}
+
+          {tab === "history" && (
+            <div style={{ width:"100%", maxWidth:400 }}>
+              {sessions.length > 0 && (
+                <div style={{ display:"flex", gap:10, marginBottom:14 }}>
+                  {[{label:"SESIONES",value:totalSessions},{label:"TOTAL PLANTAS",value:grandTotal},{label:"TOTAL PRODUCCIÓN",value:grandFlowers}].map(({label,value}) => (
+                    <div key={label} style={{ flex:1, background:"#fff", borderRadius:14, padding:"12px 8px", textAlign:"center", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+                      <div style={{ fontSize:8, fontWeight:800, color:"#94a3b8", letterSpacing:"0.5px", marginBottom:4 }}>{label}</div>
+                      <div style={{ fontSize:20, fontWeight:900, color:"#4f46e5" }}>{value}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <button onClick={handleExport} disabled={!sessions.length} style={{ width:"100%", padding:"14px", borderRadius:14, border:"none", background:!sessions.length?"#e2e8f0":"#16a34a", color:!sessions.length?"#94a3b8":"#fff", fontSize:15, fontWeight:800, cursor:!sessions.length?"not-allowed":"pointer", fontFamily:"inherit", marginBottom:14, boxShadow:!sessions.length?"none":"0 4px 14px rgba(22,163,74,0.3)" }}>
+                📊 Descargar Excel ({sessions.length} proyecciones)
+              </button>
+
+              {!sessions.length ? (
+                <div style={{ background:"#fff", borderRadius:20, padding:"40px 20px", textAlign:"center", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+                  <div style={{ fontSize:40, marginBottom:12 }}>🌾</div>
+                  <div style={{ fontWeight:800, color:"#64748b", fontSize:15 }}>Aún no hay proyecciones guardadas</div>
+                  <div style={{ color:"#94a3b8", fontSize:13, marginTop:6 }}>Guarda una proyección desde el Contador</div>
+                </div>
+              ) : (
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {sessions.map(s => (
+                    <div key={s.id} style={{ background:"#fff", borderRadius:16, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+                        <div>
+                          <div style={{ fontWeight:800, color:"#1e293b", fontSize:13 }}>{fmtDate(s.date)}</div>
+                          {(s.evaluador||s.field||s.linea||s.variedad) && (
+                            <div style={{ fontSize:12, color:"#4f46e5", fontWeight:700, marginTop:2 }}>
+                              {s.evaluador?`👤 ${s.evaluador}`:""}{s.evaluador&&(s.field||s.linea||s.variedad)?" · ":""}
+                              {s.field?s.field:""}{s.field&&(s.linea||s.variedad)?" · ":""}
+                              {s.linea?`Línea ${s.linea}`:""}{s.linea&&s.variedad?" · ":""}{s.variedad}
+                            </div>
+                          )}
+                          <div style={{ fontSize:11, color:"#94a3b8", fontWeight:600, marginTop:2 }}>{s.total} plantas · {s.weightedSum} producción · prom. {s.average}</div>
+                        </div>
+                        <button onClick={() => handleDelete(s.id)} style={{ background:"#fee2e2", border:"none", borderRadius:8, padding:"5px 9px", cursor:"pointer", fontSize:12, color:"#f43f5e", fontWeight:800, fontFamily:"inherit" }}>✕</button>
+                      </div>
+                      <div style={{ display:"flex", gap:6 }}>
+                        {s.counts.map((c,i) => (
+                          <div key={i} style={{ flex:1, background:COLORS[i].light, borderRadius:8, padding:"6px 4px", textAlign:"center" }}>
+                            <div style={{ fontSize:8, fontWeight:800, color:COLORS[i].text, marginBottom:2 }}>C{i}</div>
+                            <div style={{ fontSize:16, fontWeight:900, color:COLORS[i].text }}>{c}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
