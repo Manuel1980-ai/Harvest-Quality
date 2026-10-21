@@ -39,41 +39,51 @@
     }
 
     header {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .header-layout {
       display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 24px;
+      padding-left: 8px;
+    }
+
+    .logo-column {
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 16px;
     }
 
     .logo-icon {
-      width: 52px;
-      height: 52px;
-      flex-shrink: 0;
+      width: 70px;
+      height: 70px;
     }
 
-    .header-titles {
-      text-align: left;
-    }
-
-    .header-titles h1 {
-      font-size: 1.6rem;
+    .logo-subtext {
+      font-size: 0.7rem;
       color: var(--primary);
-      font-weight: 800;
-      line-height: 1.1;
-      margin: 0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 6px;
+      text-align: center;
+      white-space: nowrap;
     }
 
-    .header-titles p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-top: 2px;
+    .title-column {
+      display: flex;
+      align-items: center;
+      height: 70px;
+    }
+
+    .title-column h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      font-weight: 900;
+      line-height: 1;
+      margin: 0;
     }
 
     /* Tabs */
@@ -291,23 +301,25 @@
   <div class="container">
     <header>
       <div class="header-layout">
-        <!-- Logo de Cobram Estate -->
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="#0f172a" stroke-width="2"/>
-          <circle cx="50" cy="50" r="41" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-          <circle cx="50" cy="50" r="36" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-          <circle cx="50" cy="50" r="31" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-          <circle cx="50" cy="50" r="26" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-          <circle cx="50" cy="50" r="21" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-          <circle cx="50" cy="50" r="16" fill="none" stroke="#0f172a" stroke-width="1.2"/>
-          <circle cx="50" cy="50" r="11" fill="#0f172a"/>
-          <!-- Aceituna central -->
-          <path d="M47 43 C52 41 55 46 53 51 C51 55 45 54 44 49 Z" fill="#ffffff"/>
-          <path d="M52 41 Q55 37 57 39" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        <div class="header-titles">
+        <div class="logo-column">
+          <!-- Logo de Cobram Estate -->
+          <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <circle cx="50" cy="50" r="41" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="36" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="31" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="26" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="21" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="16" fill="none" stroke="#0f172a" stroke-width="1.2"/>
+            <circle cx="50" cy="50" r="11" fill="#0f172a"/>
+            <!-- Aceituna central -->
+            <path d="M47 43 C52 41 55 46 53 51 C51 55 45 54 44 49 Z" fill="#ffffff"/>
+            <path d="M52 41 Q55 37 57 39" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="logo-subtext">COBRAM ESTATE OLIVES</div>
+        </div>
+        <div class="title-column">
           <h1>Harvest Quality</h1>
-          <p>Cobram Estate Olives</p>
         </div>
       </div>
     </header>
