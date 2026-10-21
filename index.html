@@ -534,8 +534,8 @@
       document.getElementById('records-tab-label').innerText = `Records (${localRecords.length})`;
     }
 
-    // Aquí va tu URL de Google Apps Script vinculada a tu hoja de cálculo
-    const GOOGLE_SCRIPT_URL = "AQUÍ_VA_TU_URL_DE_APPS_SCRIPT";
+    // URL de Google Apps Script integrada correctamente
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQAaEG3cuHeU3FuutK1ek3vhw1mIfIYEak-4OkCNiFLaqNc5uHs2wam2OxkqK_re4/exec";
 
     async function handleSubmit(event) {
       event.preventDefault();
@@ -560,7 +560,7 @@
       };
 
       try {
-        if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "AQUÍ_VA_TU_URL_DE_APPS_SCRIPT") {
+        if (GOOGLE_SCRIPT_URL) {
           await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
