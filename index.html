@@ -546,10 +546,11 @@
 
       try {
         if (GOOGLE_SCRIPT_URL) {
-          const params = new URLSearchParams(record).toString();
-          await fetch(`${GOOGLE_SCRIPT_URL}?${params}`, {
-            method: 'GET',
-            mode: 'no-cors'
+          await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(record)
           });
         }
 
