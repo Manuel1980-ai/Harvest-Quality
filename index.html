@@ -559,13 +559,11 @@
         comments: document.getElementById('comments').value
       };
 
-      try {
+  
         if (GOOGLE_SCRIPT_URL) {
-          await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(record)
+          const params = new URLSearchParams(record).toString();
+          await fetch(`${GOOGLE_SCRIPT_URL}?${params}`, {
+            method: 'GET'
           });
         }
 
