@@ -38,7 +38,6 @@
       margin: 0 auto;
     }
 
-    /* Layout Canva */
     header {
       margin-bottom: 24px;
       padding: 0 8px;
@@ -88,7 +87,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
       background: var(--border);
@@ -123,7 +121,6 @@
       display: block;
     }
 
-    /* Card Form */
     .card {
       background: var(--card-bg);
       border-radius: 16px;
@@ -169,7 +166,6 @@
       gap: 12px;
     }
 
-    /* Rating Scale Buttons */
     .scale-group {
       margin-bottom: 20px;
     }
@@ -220,7 +216,6 @@
       box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
     }
 
-    /* Submit Button */
     .btn-primary {
       width: 100%;
       background: var(--primary);
@@ -239,7 +234,6 @@
       transform: scale(0.98);
     }
 
-    /* Records List */
     .record-item {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -265,7 +259,6 @@
       gap: 4px;
     }
 
-    /* Toast Notification */
     #toast {
       visibility: hidden;
       min-width: 250px;
@@ -325,13 +318,11 @@
       </div>
     </header>
 
-    <!-- Navigation Tabs -->
     <div class="tabs">
       <div class="tab active" onclick="switchTab('form')">Evaluation</div>
       <div class="tab" onclick="switchTab('records')" id="records-tab-label">Records (0)</div>
     </div>
 
-    <!-- Evaluation Form Section -->
     <div id="form-section" class="view-section active">
       <div class="card">
         <form id="qualityForm" onsubmit="handleSubmit(event)">
@@ -400,7 +391,6 @@
             </div>
           </div>
 
-          <!-- Scale: Damage -->
           <div class="scale-group">
             <div class="scale-header">
               <label>Damage (0.5 - 5)</label>
@@ -420,7 +410,6 @@
             </div>
           </div>
 
-          <!-- Scale: Ground -->
           <div class="scale-group">
             <div class="scale-header">
               <label>Ground (0.5 - 5)</label>
@@ -440,7 +429,6 @@
             </div>
           </div>
 
-          <!-- Scale: Tree Fruit -->
           <div class="scale-group">
             <div class="scale-header">
               <label>Tree Fruit (0.5 - 5)</label>
@@ -470,7 +458,6 @@
       </div>
     </div>
 
-    <!-- Records History Section -->
     <div id="records-section" class="view-section">
       <div id="recordsList"></div>
     </div>
@@ -480,7 +467,6 @@
   <div id="toast">Record saved successfully</div>
 
   <script>
-    // Set default date to today
     document.getElementById('date').valueAsDate = new Date();
 
     const scores = {
@@ -534,7 +520,6 @@
       document.getElementById('records-tab-label').innerText = `Records (${localRecords.length})`;
     }
 
-    // URL de Google Apps Script integrada correctamente
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQAaEG3cuHeU3FuutK1ek3vhw1mIfIYEak-4OkCNiFLaqNc5uHs2wam2OxkqK_re4/exec";
 
     async function handleSubmit(event) {
@@ -559,7 +544,7 @@
         comments: document.getElementById('comments').value
       };
 
-  
+      try {
         if (GOOGLE_SCRIPT_URL) {
           const params = new URLSearchParams(record).toString();
           await fetch(`${GOOGLE_SCRIPT_URL}?${params}`, {
