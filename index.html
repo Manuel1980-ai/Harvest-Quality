@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Harvest Quality - Cobram Estate Olives</title>
+  <!-- Librería SheetJS para generar archivos Excel nativos (.xlsx) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
       --primary: #1e3a8a;
@@ -230,8 +232,18 @@
       transition: background 0.2s;
     }
 
-    .btn-primary:active {
-      transform: scale(0.98);
+    .btn-success {
+      width: 100%;
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
     }
 
     .record-item {
@@ -459,6 +471,7 @@
     </div>
 
     <div id="records-section" class="view-section">
+      <button class="btn-success" onclick="exportToExcel()">📊 Download Records (.xlsx)</button>
       <div id="recordsList"></div>
     </div>
 
@@ -520,18 +533,11 @@
       document.getElementById('records-tab-label').innerText = `Records (${localRecords.length})`;
     }
 
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQAaEG3cuHeU3FuutK1ek3vhw1mIfIYEak-4OkCNiFLaqNc5uHs2wam2OxkqK_re4/exec";
-
     async function handleSubmit(event) {
       event.preventDefault();
       
-      const btn = document.getElementById('submitBtn');
-      btn.innerText = "Saving...";
-      btn.disabled = true;
-
       const record = {
         date: document.getElementById('date').value,
-        observer: document.getElementById('observer').value,
         harvester: document.getElementById('harvester').value,
         shift: document.getElementById('shift').value,
         driver: document.getElementById('driver').value,
@@ -541,37 +547,20 @@
         damage: scores.damage,
         ground: scores.ground,
         treeFruit: scores.treeFruit,
+        observer: document.getElementById('observer').value,
         comments: document.getElementById('comments').value
       };
 
-      try {
-        if (GOOGLE_SCRIPT_URL) {
-          await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(record)
-          });
-        }
+      localRecords.unshift(record);
+      localStorage.setItem('harvest_records', JSON.stringify(localRecords));
+      updateRecordCount();
 
-        localRecords.unshift(record);
-        localStorage.setItem('harvest_records', JSON.stringify(localRecords));
-        updateRecordCount();
-
-        showToast("Record successfully saved to Sheets!");
-        document.getElementById('qualityForm').reset();
-        document.getElementById('date').valueAsDate = new Date();
-        selectScale('damage', '0.5');
-        selectScale('ground', '0.5');
-        selectScale('treeFruit', '0.5');
-
-      } catch (error) {
-        console.error(error);
-        showToast("Error saving record. Check connection.");
-      } finally {
-        btn.innerText = "Save Record";
-        btn.disabled = false;
-      }
+      showToast("Record saved locally!");
+      document.getElementById('qualityForm').reset();
+      document.getElementById('date').valueAsDate = new Date();
+      selectScale('damage', '0.5');
+      selectScale('ground', '0.5');
+      selectScale('treeFruit', '0.5');
     }
 
     function renderRecords() {
@@ -598,6 +587,47 @@
           ${r.comments ? `<div style="margin-top: 6px; font-size: 0.8rem; color: #334155;"><strong>Notes:</strong> ${r.comments}</div>` : ''}
         </div>
       `).join('');
+    }
+
+    function exportToExcel() {
+      if (localRecords.length === 0) {
+        showToast("No records to export.");
+        return;
+      }
+
+      // Encabezados en orden secuencial exacto A - L
+      const headers = [
+        "Date", "Harvester", "Shift", "Driver", "Field", 
+        "Block / Row", "Variety", "Damage (0.5-5)", 
+        "Ground (0.5-5)", "Tree Fruit (0.5-5)", "Observer", "Comments"
+      ];
+
+      // Mapear los datos según el orden de las columnas A-L
+      const dataRows = localRecords.map(r => [
+        r.date,
+        r.harvester,
+        r.shift,
+        r.driver,
+        r.field,
+        r.blockRow,
+        r.variety,
+        parseFloat(r.damage),
+        parseFloat(r.ground),
+        parseFloat(r.treeFruit),
+        r.observer,
+        r.comments || ''
+      ]);
+
+      // Unir encabezados y filas
+      const excelData = [headers, ...dataRows];
+
+      // Crear el libro de trabajo de Excel (.xlsx)
+      const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Harvest Quality");
+
+      // Descargar archivo Excel nativo (.xlsx)
+      XLSX.writeFile(workbook, `Harvest_Quality_Records_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
   </script>
 </body>
